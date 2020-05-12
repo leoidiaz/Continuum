@@ -42,13 +42,13 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wa6-U2-fJv">
-                                            <rect key="frame" x="37.666666666666657" y="10" width="300" height="300.33333333333331"/>
+                                            <rect key="frame" x="37.666666666666657" y="10" width="300" height="300"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="Wa6-U2-fJv" secondAttribute="height" multiplier="1:1" id="9wS-tH-uSy"/>
                                             </constraints>
                                         </imageView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="j2e-7D-AiF">
-                                            <rect key="frame" x="37.666666666666657" y="320.33333333333331" width="300" height="45.666666666666686"/>
+                                            <rect key="frame" x="37.666666666666657" y="320" width="300" height="45.666666666666686"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(Caption)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oiy-mr-oVb">
                                                     <rect key="frame" x="0.0" y="0.0" width="300" height="20.333333333333332"/>
@@ -72,7 +72,7 @@
                                         <constraint firstItem="Wa6-U2-fJv" firstAttribute="centerX" secondItem="tZf-ta-alY" secondAttribute="centerX" id="Fy0-gL-idu"/>
                                         <constraint firstItem="Wa6-U2-fJv" firstAttribute="top" secondItem="tZf-ta-alY" secondAttribute="top" constant="10" id="Yba-Qh-kaB"/>
                                         <constraint firstItem="j2e-7D-AiF" firstAttribute="width" secondItem="Wa6-U2-fJv" secondAttribute="width" id="jen-dS-6Oh"/>
-                                        <constraint firstItem="Wa6-U2-fJv" firstAttribute="height" secondItem="tZf-ta-alY" secondAttribute="height" multiplier="0.8" id="tbD-R1-Mzi"/>
+                                        <constraint firstItem="Wa6-U2-fJv" firstAttribute="height" relation="lessThanOrEqual" secondItem="tZf-ta-alY" secondAttribute="height" multiplier="0.8" id="tbD-R1-Mzi"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -115,18 +115,18 @@
                                                 <constraint firstAttribute="width" secondItem="XsN-cS-R9F" secondAttribute="height" multiplier="1:1" id="0UO-R3-dwH"/>
                                             </constraints>
                                         </imageView>
-                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="A9D-W6-fyu">
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="A9D-W6-fyu">
                                             <rect key="frame" x="0.0" y="240.00000000000003" width="240" height="62.666666666666657"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2tv-UX-n3G">
-                                                    <rect key="frame" x="0.0" y="0.0" width="80" height="30"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="76.666666666666671" height="30"/>
                                                     <state key="normal" title="Comment"/>
                                                     <connections>
                                                         <action selector="commentButtonTapped:" destination="l17-dT-VXs" eventType="touchUpInside" id="hfP-VI-6Bo"/>
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="z9R-QC-Ysl">
-                                                    <rect key="frame" x="80" y="0.0" width="80" height="30"/>
+                                                    <rect key="frame" x="81.666666666666657" y="0.0" width="76.666666666666657" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Share"/>
                                                     <connections>
@@ -134,7 +134,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qZM-P9-fv5">
-                                                    <rect key="frame" x="160" y="0.0" width="80" height="30"/>
+                                                    <rect key="frame" x="163.33333333333334" y="0.0" width="76.666666666666657" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Follow Post"/>
                                                     <connections>

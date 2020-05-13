@@ -61,7 +61,7 @@ class PhotoSelectorViewController: UIViewController {
     }
     
 }
-
+    //MARK: - UIImagePickerDelegate
 extension PhotoSelectorViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate{
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)

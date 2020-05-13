@@ -37,7 +37,7 @@ class PostDetailTableViewController: UITableViewController {
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let addCommentAction = UIAlertAction(title: "Ok", style: .default) { (_) in
-            guard let commentText = alertController.textFields?.first?.text, !commentText.isEmpty else { return }
+            guard let commentText = alertController.textFields?.first?.text, !commentText.isEmpty else { return self.presentErrorToUser(localizedError: .noCommentText)}
             PostController.shared.addComment(text: commentText, post: post) { (comment) in
             }
             self.tableView.reloadData()

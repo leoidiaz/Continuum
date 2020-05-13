@@ -9,11 +9,10 @@
 import UIKit
 
 extension UIViewController {
-    
-    func presentErrorToUser(localizedError: LocalizedError) {
-        let alertController = UIAlertController(title: "ERROR", message: localizedError.errorDescription, preferredStyle: .actionSheet)
+    func presentErrorToUser(localizedError: PostError) {
+        let alertController = UIAlertController(title: "GAWRSH!", message: localizedError.errorDescription, preferredStyle: .actionSheet)
         
-        let dismissAction = UIAlertAction(title: "Ok", style: .cancel)
+        let dismissAction = UIAlertAction(title: "sigh", style: .cancel)
         alertController.addAction(dismissAction)
         
         present(alertController, animated: true)

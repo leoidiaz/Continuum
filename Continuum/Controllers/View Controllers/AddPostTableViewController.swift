@@ -8,14 +8,14 @@
 
 import UIKit
 
-class AddPostTableViewController: UITableViewController {
+class AddPostTableViewController: UITableViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     //MARK: - Properties
     private let reuseIdentifier = "addPostCell"
+    private let segueIdentifier = "toPhotoSelectorVC"
+    var selectedImage: UIImage?
     
     //MARK: - Outlets
-    @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var addPostButton: UIButton!
-    @IBOutlet weak var selectImageButton: UIButton!
     @IBOutlet weak var captionTextField: UITextField!
     
     //MARK: - Lifecycle
@@ -24,18 +24,11 @@ class AddPostTableViewController: UITableViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        postImageView.image = nil
         captionTextField.text = ""
-        selectImageButton.setTitle("Select Image", for: .normal)
-    }
-    
-    @IBAction func selectImageButtonTapped(_ sender: Any) {
-        postImageView.image = #imageLiteral(resourceName: "spaceEmptyState")
-        selectImageButton.setTitle("", for: .normal)
     }
     
     @IBAction func addPostButtonTapped(_ sender: Any) {
-        guard let postImage = postImageView.image, let caption = captionTextField.text else { return }
+        guard let postImage = selectedImage, let caption = captionTextField.text else { return }
         PostController.shared.createPostWith(postImage: postImage, caption: caption) { (_) in
         }
         
@@ -46,4 +39,18 @@ class AddPostTableViewController: UITableViewController {
         self.tabBarController?.selectedIndex = 0
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == segueIdentifier {
+            let destinationVC = segue.destination as? PhotoSelectorViewController
+            destinationVC?.delegate = self
+        }
+    }
+    
 }
+
+extension AddPostTableViewController: PhotoSelectorViewControllerDelegate{
+    func photoSelectorViewControllerSelected(image: UIImage) {
+        selectedImage = image
+    } 
+}
+

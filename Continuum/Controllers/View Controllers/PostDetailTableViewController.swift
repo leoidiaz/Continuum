@@ -24,6 +24,12 @@ class PostDetailTableViewController: UITableViewController {
         didSet{
             loadViewIfNeeded()
             updateViews()
+            guard let post = post else { return }
+            PostController.shared.fetchComments(for: post) { (comments) in
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
         }
     }
     

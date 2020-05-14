@@ -7,13 +7,23 @@
 //
 
 import UIKit
+import CloudKit
+
+struct PostConstants {
+    static let typeKey = "Post"
+    static let captionKey = "caption"
+    static let timestampKey = "timestamp"
+    static let commentsKey = "comments"
+    static let photoKey = "photo"
+    static let commentCountKey = "commentCount"
+}
 
 class Post:SearchableRecord {
     
-    var photoData: Data?
     var timestamp: Date
     var caption: String
     var comments: [Comment]
+    var commentCount: Int
     
     var photo: UIImage? {
         get{
@@ -25,10 +35,28 @@ class Post:SearchableRecord {
         }
     }
     
-    init(timestamp: Date = Date(), caption: String, comments: [Comment] = [], photo: UIImage?) {
+    var photoData: Data?
+    var recordID: CKRecord.ID
+    var imageAsset: CKAsset?{
+        get {
+            let tempDirectory = NSTemporaryDirectory()
+            let tempDirectoryURL = URL(fileURLWithPath: tempDirectory)
+            let fileURL = tempDirectoryURL.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpg")
+            do {
+                try photoData?.write(to: fileURL)
+            } catch {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+            }
+            return CKAsset(fileURL: fileURL)
+        }
+    }
+    
+    init(timestamp: Date = Date(), caption: String, comments: [Comment] = [], photo: UIImage?, recordID: CKRecord.ID = CKRecord.ID(recordName: UUID().uuidString), commentCount: Int = 0) {
         self.timestamp = timestamp
         self.caption = caption
         self.comments = comments
+        self.recordID = recordID
+        self.commentCount = commentCount
         self.photo = photo
     }
     
@@ -43,5 +71,37 @@ class Post:SearchableRecord {
             }
         }
         return false
+    }
+}
+
+extension CKRecord {
+    convenience init(post: Post){
+        self.init(recordType: PostConstants.typeKey, recordID: post.recordID)
+        setValuesForKeys([
+            PostConstants.captionKey : post.caption,
+            PostConstants.timestampKey: post.timestamp,
+            PostConstants.commentsKey : post.comments,
+            PostConstants.commentCountKey : post.commentCount,
+            PostConstants.photoKey : post.imageAsset
+        ])
+    }
+}
+
+extension Post {
+    convenience init?(ckRecord: CKRecord){
+        guard let caption = ckRecord[PostConstants.captionKey] as? String,
+            let comments = ckRecord[PostConstants.commentsKey] as? [Comment],
+            let timestamp = ckRecord[PostConstants.timestampKey] as? Date,
+            let commentCount = ckRecord[PostConstants.commentCountKey] as? Int else { return nil }
+        var foundPhoto: UIImage?
+        if let photoAsset = ckRecord[PostConstants.photoKey] as? CKAsset {
+            do {
+                let data = try Data(contentsOf: photoAsset.fileURL!)
+                foundPhoto = UIImage(data: data)
+            } catch {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+            }
+        }
+        self.init(timestamp: timestamp, caption: caption, comments: comments, photo: foundPhoto, recordID: ckRecord.recordID, commentCount: commentCount)
     }
 }

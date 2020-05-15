@@ -13,7 +13,7 @@ struct CommentConstants {
     static let recordTypeKey = "Comment"
     static let textKey = "text"
     static let timestampKey = "timestamp"
-    static let referenceKey = "postReference"
+    static let referenceKey = "post"
 }
 
 class Comment: SearchableRecord {

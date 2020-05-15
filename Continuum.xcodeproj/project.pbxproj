@@ -19,6 +19,7 @@
 		29580FE8246B521300EC81FC /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29580FE7246B521300EC81FC /* DateExtension.swift */; };
 		2958EFAA246C853E002EE5E4 /* SearchableRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2958EFA9246C853E002EE5E4 /* SearchableRecord.swift */; };
 		2958EFAC246C9303002EE5E4 /* PhotoSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2958EFAB246C9303002EE5E4 /* PhotoSelectorViewController.swift */; };
+		29C9F78B246E0A9300A0D1BD /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29C9F78A246E0A9300A0D1BD /* CloudKit.framework */; };
 		F7F99C392211F96400D13C4C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F99C382211F96400D13C4C /* AppDelegate.swift */; };
 		F7F99C3E2211F96400D13C4C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7F99C3C2211F96400D13C4C /* Main.storyboard */; };
 		F7F99C402211F96600D13C4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7F99C3F2211F96600D13C4C /* Assets.xcassets */; };
@@ -38,6 +39,8 @@
 		29580FE7246B521300EC81FC /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		2958EFA9246C853E002EE5E4 /* SearchableRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableRecord.swift; sourceTree = "<group>"; };
 		2958EFAB246C9303002EE5E4 /* PhotoSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorViewController.swift; sourceTree = "<group>"; };
+		29C9F788246E0A7800A0D1BD /* Continuum.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Continuum.entitlements; sourceTree = "<group>"; };
+		29C9F78A246E0A9300A0D1BD /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		F7F99C352211F96400D13C4C /* Continuum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Continuum.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7F99C382211F96400D13C4C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F7F99C3D2211F96400D13C4C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -51,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29C9F78B246E0A9300A0D1BD /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,11 +129,20 @@
 			path = "Custom Views";
 			sourceTree = "<group>";
 		};
+		29C9F789246E0A9300A0D1BD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29C9F78A246E0A9300A0D1BD /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F7F99C2C2211F96400D13C4C = {
 			isa = PBXGroup;
 			children = (
 				F7F99C372211F96400D13C4C /* Continuum */,
 				F7F99C362211F96400D13C4C /* Products */,
+				29C9F789246E0A9300A0D1BD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -144,6 +157,7 @@
 		F7F99C372211F96400D13C4C /* Continuum */ = {
 			isa = PBXGroup;
 			children = (
+				29C9F788246E0A7800A0D1BD /* Continuum.entitlements */,
 				29580FDF246B38DF00EC81FC /* Helpers+Extensions */,
 				29580FCF246B32F200EC81FC /* Controllers */,
 				29580FCE246B32EE00EC81FC /* Model */,
@@ -383,6 +397,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Continuum/Continuum.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 74FP7YTMHY;
 				INFOPLIST_FILE = Continuum/Resources/Info.plist;
@@ -401,6 +416,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Continuum/Continuum.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 74FP7YTMHY;
 				INFOPLIST_FILE = Continuum/Resources/Info.plist;

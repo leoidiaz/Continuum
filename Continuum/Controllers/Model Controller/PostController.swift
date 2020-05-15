@@ -13,7 +13,9 @@ class PostController {
     
     static let shared = PostController()
     var posts = [Post]()
-    
+    init() {
+        subscribeToNewPosts(completion: nil)
+    }
     let publicDB = CKContainer.default().publicCloudDatabase
     
     func addComment(text: String, post: Post, completion: @escaping (Result <Comment, PostError>) -> Void){
@@ -29,6 +31,7 @@ class PostController {
                 print("Could not unwrap record")
                 return completion(.failure(.couldNotUnwrap))
             }
+            self.incrementCommentCount(post: post, completion: nil)
             print("Success saving the comment boss")
             completion(.success(savedComment))
             post.comments.append(newComment)
@@ -63,7 +66,7 @@ class PostController {
         publicDB.perform(query, inZoneWith: nil) { (records, error) in
             if let error = error {
                 print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
-                completion(nil)
+                return completion(nil)
             }
             guard let records = records else { return completion(nil)}
             let comments = records.compactMap({Comment(ckRecord: $0, post: post)})
@@ -72,20 +75,21 @@ class PostController {
         }
     }
     
-    func fetchPosts(completion: @escaping([Post]?) -> Void){
+    func fetchPosts(completion: @escaping(Result<[Post]?, PostError>) -> Void){
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: PostConstants.typeKey, predicate: predicate)
         publicDB.perform(query, inZoneWith: nil) { (records, error) in
             if let error = error {
-                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
-                return completion(nil)
+                return completion(.failure(.ckError(error)))
             }
-            guard let records = records else { return completion(nil)}
             
-            let posts = records.compactMap({Post(ckRecord: $0)})
+            guard let records = records else { return completion(.failure(.couldNotUnwrap)) }
+            
+            let posts = records.compactMap{ Post(ckRecord: $0) }
+            
             self.posts = posts
-            completion(posts)
             
+            completion(.success(posts))
         }
     }
     
@@ -104,5 +108,109 @@ class PostController {
             }
         }
         publicDB.add(operation)
+    }
+    
+    func subscribeToNewPosts(completion: ((Bool, Error?) -> Void)?){
+        let predicate = NSPredicate(value: true)
+        let querySubscription = CKQuerySubscription(recordType: PostConstants.typeKey, predicate: predicate, options: CKQuerySubscription.Options.firesOnRecordCreation)
+        
+        let notification = CKSubscription.NotificationInfo()
+        notification.alertBody = "New Post Added"
+        notification.shouldBadge = true
+        notification.shouldSendContentAvailable = true
+        querySubscription.notificationInfo = notification
+        
+        publicDB.save(querySubscription) { (_, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                completion?(false, error)
+                return
+            } else {
+                completion?(true, nil)
+            }
+        }
+    }
+    
+    func subscribeToNewComments(post: Post, completion:((Bool, Error?) -> Void)?){
+        let predicate = NSPredicate(format: "%K == %@", CommentConstants.referenceKey, post.recordID)
+        let querySubscription = CKQuerySubscription(recordType: CommentConstants.recordTypeKey, predicate: predicate, subscriptionID: post.recordID.recordName, options: CKQuerySubscription.Options.firesOnRecordCreation)
+        
+        let commentNotfication = CKSubscription.NotificationInfo()
+        commentNotfication.alertBody = "New Comment Added"
+        commentNotfication.shouldBadge = true
+        commentNotfication.shouldSendContentAvailable = true
+        querySubscription.notificationInfo = commentNotfication
+        
+        publicDB.save(querySubscription) { (_, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                completion?(false, error)
+                return
+            } else {
+                completion?(true, nil)
+            }
+            
+        }
+    }
+    
+    func removeSubscriptionFrom(post: Post, completion:((Bool) -> Void)?){
+        let subID = post.recordID.recordName
+        publicDB.delete(withSubscriptionID: subID) { (_, error) in
+            if let error = error{
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                completion?(false)
+                return
+            } else {
+                completion?(true)
+            }
+        }
+    }
+    
+    func checkForSubscription(post: Post, completion: ((Bool) -> Void)?){
+        let subID = post.recordID.recordName
+        publicDB.fetch(withSubscriptionID: subID) { (subscription, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                //                completion?(false)
+            }
+            
+            if subscription != nil{
+                completion?(true)
+            } else {
+                completion?(false)
+            }
+        }
+    }
+    
+    func toggleSubscription(post: Post, completion: ((Bool, Error?) -> Void)?){
+        checkForSubscription(post: post) { (subscriptionStatus) in
+            if subscriptionStatus{
+                self.removeSubscriptionFrom(post: post) { (success) in
+                    if success {
+                        print("Unsubscribe successful!")
+                        completion?(false, nil)
+                    } else {
+                        print("Error unsubscribing here")
+                        completion?(true, nil)
+                    }
+                }
+            } else {
+                self.subscribeToNewComments(post: post) { (success, error) in
+                    if let error = error {
+                        print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                        completion?(false, error)
+                        return
+                    }
+                    if success {
+                        print("Successfully subscribed!")
+                        completion?(true, nil)
+                        return
+                    } else {
+                        print("Error subscribing here")
+                        completion?(false, nil)
+                    }
+                }
+            }
+        }
     }
 }

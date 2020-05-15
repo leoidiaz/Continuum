@@ -80,7 +80,6 @@ extension CKRecord {
         setValuesForKeys([
             PostConstants.captionKey : post.caption,
             PostConstants.timestampKey: post.timestamp,
-            PostConstants.commentsKey : post.comments,
             PostConstants.commentCountKey : post.commentCount,
             PostConstants.photoKey : post.imageAsset
         ])
@@ -90,7 +89,6 @@ extension CKRecord {
 extension Post {
     convenience init?(ckRecord: CKRecord){
         guard let caption = ckRecord[PostConstants.captionKey] as? String,
-            let comments = ckRecord[PostConstants.commentsKey] as? [Comment],
             let timestamp = ckRecord[PostConstants.timestampKey] as? Date,
             let commentCount = ckRecord[PostConstants.commentCountKey] as? Int else { return nil }
         var foundPhoto: UIImage?
@@ -102,6 +100,6 @@ extension Post {
                 print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
             }
         }
-        self.init(timestamp: timestamp, caption: caption, comments: comments, photo: foundPhoto, recordID: ckRecord.recordID, commentCount: commentCount)
+        self.init(timestamp: timestamp, caption: caption, photo: foundPhoto, recordID: ckRecord.recordID, commentCount: commentCount)
     }
 }

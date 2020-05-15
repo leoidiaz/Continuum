@@ -29,15 +29,17 @@ class PostListTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        resultsArray = PostController.shared.posts
-        self.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.resultsArray = PostController.shared.posts
+            self.tableView.reloadData()
+        }
     }
     // MARK: - Table view data source
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.count
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? PostTableViewCell else { return UITableViewCell()}
         let post = dataSource[indexPath.row] as? Post
@@ -55,36 +57,43 @@ class PostListTableViewController: UITableViewController {
     }
     
     func fullSync(completion:((Bool) -> Void)?){
-        PostController.shared.fetchPosts { (posts) in
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                completion?(posts != nil)
+        PostController.shared.fetchPosts { (result) in
+            switch result {
+            case .success(let posts):
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    completion?(posts != nil)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion?(false)
             }
         }
     }
 }
-
 extension PostListTableViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let results = PostController.shared.posts.filter { (post) -> Bool in
-            return post.matches(searchTerm: searchText)
+        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            let results = PostController.shared.posts.filter { (post) -> Bool in
+                return post.matches(searchTerm: searchText)
+            }
+            resultsArray = results
+            self.tableView.reloadData()
         }
-        resultsArray = results
-        self.tableView.reloadData()
+        
+        func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+            resultsArray = PostController.shared.posts
+            postSearchBar.text = ""
+            postSearchBar.resignFirstResponder()
+            self.tableView.reloadData()
+        }
+        
+        func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+            isSearching = true
+        }
+        
+        func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+            isSearching = false
+        }
     }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        resultsArray = PostController.shared.posts
-        postSearchBar.text = ""
-        postSearchBar.resignFirstResponder()
-        self.tableView.reloadData()
-    }
-    
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        isSearching = true
-    }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        isSearching = false
-    }
-}
+
+

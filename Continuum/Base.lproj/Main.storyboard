@@ -195,6 +195,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="Z1I-iA-jlO"/>
                     <connections>
+                        <outlet property="followPostButton" destination="qZM-P9-fv5" id="p7k-1J-hTV"/>
                         <outlet property="photoImageView" destination="XsN-cS-R9F" id="jXM-Kg-JTi"/>
                     </connections>
                 </tableViewController>

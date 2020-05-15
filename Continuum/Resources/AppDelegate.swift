@@ -20,8 +20,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let fetchedUserStatment = success ? "Successfully retrieved a logged in user" : "Failed to retrieve a logged in user"
             print(fetchedUserStatment)
         }
+        
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (userDidAllow, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                return
+            }
+            
+            if userDidAllow {
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        }
+        
         return true
     }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
+    }
+    
     
     func checkSignInStatus(completion: @escaping (Bool) -> Void){
         CKContainer.default().accountStatus { (status, error) in

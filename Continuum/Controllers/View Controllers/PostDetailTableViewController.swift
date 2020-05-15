@@ -13,6 +13,7 @@ class PostDetailTableViewController: UITableViewController {
     //MARK: - Outlets
     @IBOutlet weak var photoImageView: UIImageView!
     
+    @IBOutlet weak var followPostButton: UIButton!
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,15 +62,32 @@ class PostDetailTableViewController: UITableViewController {
     }
     
     @IBAction func followButtonTapped(_ sender: Any) {
+        guard let post = post else { return }
+        PostController.shared.toggleSubscription(post: post) { (success, error) in
+            if let error = error {
+                print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
+                return
+            }
+            self.updateViews()
+        }
     }
     
     //MARK: - Private Methods
     private func updateViews(){
         guard let post = post else { return }
-        photoImageView.image = post.photo
-        tableView.reloadData()
+        PostController.shared.checkForSubscription(post: post) { (subscriptionStatus) in
+            DispatchQueue.main.async {
+                if subscriptionStatus{
+                    self.followPostButton.setTitle("Unfollow", for: .normal)
+                } else {
+                    self.followPostButton.setTitle("Follow", for: .normal)
+                }
+                self.photoImageView.image = post.photo
+                self.tableView.reloadData()
+            }
+        }
     }
-
+    
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return post?.comments.count ?? 0
@@ -83,6 +101,6 @@ class PostDetailTableViewController: UITableViewController {
         cell.detailTextLabel?.text = postComments.timestamp.format()
         return cell
     }
-
-
+    
+    
 }

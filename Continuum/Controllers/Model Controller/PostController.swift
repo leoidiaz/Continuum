@@ -112,7 +112,7 @@ class PostController {
     
     func subscribeToNewPosts(completion: ((Bool, Error?) -> Void)?){
         let predicate = NSPredicate(value: true)
-        let querySubscription = CKQuerySubscription(recordType: PostConstants.typeKey, predicate: predicate, options: CKQuerySubscription.Options.firesOnRecordCreation)
+        let querySubscription = CKQuerySubscription(recordType: PostConstants.typeKey, predicate: predicate, subscriptionID: "Posts", options: CKQuerySubscription.Options.firesOnRecordCreation)
         
         let notification = CKSubscription.NotificationInfo()
         notification.alertBody = "New Post Added"
@@ -171,7 +171,8 @@ class PostController {
         publicDB.fetch(withSubscriptionID: subID) { (subscription, error) in
             if let error = error {
                 print("Error in \(#function) : \(error.localizedDescription) \n---\n \(error)")
-                //                completion?(false)
+                completion?(false)
+                return
             }
             
             if subscription != nil{

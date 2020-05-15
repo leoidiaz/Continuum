@@ -145,7 +145,7 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qZM-P9-fv5">
                                                     <rect key="frame" x="163.33333333333334" y="0.0" width="76.666666666666657" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Follow Post"/>
+                                                    <state key="normal" title="Follow"/>
                                                     <connections>
                                                         <action selector="followButtonTapped:" destination="l17-dT-VXs" eventType="touchUpInside" id="2me-8U-TvU"/>
                                                     </connections>
